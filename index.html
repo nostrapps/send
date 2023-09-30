@@ -6,6 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Send Event</title>
 
+    <!-- Data Island for relays -->
+    <script type="application/json" id="data">
+      {
+        "relays": [
+          "wss://relay.damus.io",
+          "wss://relay.snort.social",
+          "wss://nos.lol",
+          "wss://nostr.orangepill.dev"
+        ]
+      }
+    </script>
+
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
 
     <style>
@@ -21,15 +33,7 @@
 
     <script src="https://unpkg.com/nostr-tools/lib/nostr.bundle.js"></script>
 
-    <main
-      id="main"
-      data-relays='[
-    "wss://relay.damus.io",
-    "wss://relay.snort.social",
-    "wss://nos.lol",
-    "wss://nostr.orangepill.dev"
-  ]'
-    >
+    <main id="main">
       <h1>Send to Relays</h1>
 
       <form id="relayForm">
@@ -56,6 +60,12 @@
       </form>
 
       <script>
+        const relayDataElement = document.getElementById('data')
+        const relayData = JSON.parse(relayDataElement.textContent)
+        const relays = relayData.relays
+
+        console.log('relays', relays)
+
         document
           .getElementById('nip07')
           .addEventListener('click', async event => {
