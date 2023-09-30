@@ -1,80 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nomen Explorer</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Send Event</title>
 
-  <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
 
-  <style>
-    :root {
-      --accent: violet;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h2 style="margin: 12px;">Nomen Explorer</h2>
-  </header>
+    <style>
+      :root {
+        --accent: violet;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2 style="margin: 12px">Send Event</h2>
+    </header>
 
-  <script src="https://unpkg.com/nostr-tools/lib/nostr.bundle.js"></script>
+    <script src="https://unpkg.com/nostr-tools/lib/nostr.bundle.js"></script>
 
-  <main id="main" data-relays="[
-    &quot;wss://relay.damus.io&quot;,
-    &quot;wss://relay.snort.social&quot;,
-    &quot;wss://nos.lol&quot;,
-    &quot;wss://nostr.orangepill.dev&quot;
-  ]">
-    <h1>Send to Relays</h1>
-    
-    <form id="relayForm">
-      <p>
-        <label for="kind">Kind:</label>
-        <input type="text" id="kind" name="kind" required>
-      </p>
+    <main
+      id="main"
+      data-relays='[
+    "wss://relay.damus.io",
+    "wss://relay.snort.social",
+    "wss://nos.lol",
+    "wss://nostr.orangepill.dev"
+  ]'
+    >
+      <h1>Send to Relays</h1>
 
-      <p>
-        <label for="content">Content:</label>
-        <textarea id="content" name="content" rows="4" required></textarea>
-      </p>
+      <form id="relayForm">
+        <p>
+          <label for="kind">Kind:</label>
+          <input type="text" id="kind" name="kind" required />
+        </p>
 
-      <p>
-        <label for="pubkey">Pubkey (hex or npub encoded):</label>
-        <input type="text" id="pubkey" name="pubkey" required>
-        <br>
-        <small><a href="#" id="nip07">Use NIP-07</a></small>
-      </p>
+        <p>
+          <label for="content">Content:</label>
+          <textarea id="content" name="content" rows="4" required></textarea>
+        </p>
 
-      <p>
-        <input type="submit" value="Send to Relay">
-      </p>
-    </form>
+        <p>
+          <label for="pubkey">Pubkey (hex or npub encoded):</label>
+          <input type="text" id="pubkey" name="pubkey" required />
+          <br />
+          <small><a href="#" id="nip07">Use NIP-07</a></small>
+        </p>
 
-    <script>
-      document.getElementById('nip07').addEventListener('click', async (event) => {
-        console.log('getting pubkey');
-        event.preventDefault();
-        if (window.nostr) {
-          let pubkey = await window.nostr.getPublicKey();
-          document.getElementById('pubkey').value = pubkey;
-        }
-      });
+        <p>
+          <input type="submit" value="Send to Relay" />
+        </p>
+      </form>
 
-      document.addEventListener("DOMContentLoaded", function() {
-        const form = document.getElementById('relayForm');
-        form.addEventListener('submit', function(e) {
-          e.preventDefault();
-          const kind = document.getElementById('kind').value;
-          const content = document.getElementById('content').value;
-          
-          // Replace this with your actual sending logic to relay
-          console.log(`Sending to relay with kind: ${kind}, content: ${content}`);
-        });
-      });
-    </script>
-  </main>
-</body>
+      <script>
+        document
+          .getElementById('nip07')
+          .addEventListener('click', async event => {
+            console.log('getting pubkey')
+            event.preventDefault()
+            if (window.nostr) {
+              let pubkey = await window.nostr.getPublicKey()
+              document.getElementById('pubkey').value = pubkey
+            }
+          })
+
+        document.addEventListener('DOMContentLoaded', function () {
+          const form = document.getElementById('relayForm')
+          form.addEventListener('submit', function (e) {
+            e.preventDefault()
+            const kind = document.getElementById('kind').value
+            const content = document.getElementById('content').value
+
+            // Replace this with your actual sending logic to relay
+            console.log(
+              `Sending to relay with kind: ${kind}, content: ${content}`
+            )
+          })
+        })
+      </script>
+    </main>
+  </body>
 </html>
-
