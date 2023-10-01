@@ -2,10 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Send Event</title>
-
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
+    <style>
+      :root {
+        --accent: violet;
+      }
+    </style>
     <!-- Data Island for relays -->
     <script type="application/json" id="data">
       {
@@ -17,80 +21,100 @@
         ]
       }
     </script>
-
-    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css" />
-
-    <style>
-      :root {
-        --accent: violet;
-      }
-    </style>
   </head>
   <body>
     <header>
       <h2 style="margin: 12px">Send Event</h2>
     </header>
+    <div id="app"></div>
+    <script type="module">
+      import { Component, render, html } from './js/standalone.module.js'
 
-    <script src="https://unpkg.com/nostr-tools/lib/nostr.bundle.js"></script>
+      class App extends Component {
+        constructor() {
+          super()
+          const relayDataElement = document.getElementById('data')
+          const relayData = JSON.parse(relayDataElement.textContent)
+          this.state = {
+            relays: relayData.relays,
+            kind: '',
+            content: '',
+            pubkey: ''
+          }
+        }
 
-    <main id="main">
-      <h1>Send to Relays</h1>
+        handleInputChange = e => {
+          this.setState({ [e.target.name]: e.target.value })
+        }
 
-      <form id="relayForm">
-        <p>
-          <label for="kind">Kind:</label>
-          <input type="text" id="kind" name="kind" required />
-        </p>
+        handleSubmit = e => {
+          e.preventDefault()
+          console.log(
+            `Sending to relay with kind: ${this.state.kind}, content: ${this.state.content}`
+          )
+        }
 
-        <p>
-          <label for="content">Content:</label>
-          <textarea id="content" name="content" rows="4" required></textarea>
-        </p>
+        handleNIP07 = async () => {
+          if (window.nostr) {
+            let pubkey = await window.nostr.getPublicKey()
+            this.setState({ pubkey })
+          }
+        }
 
-        <p>
-          <label for="pubkey">Pubkey (hex or npub encoded):</label>
-          <input type="text" id="pubkey" name="pubkey" required />
-          <br />
-          <small><a href="#" id="nip07">Use NIP-07</a></small>
-        </p>
+        render(props, state) {
+          return html`
+            <main>
+              <h1>Send to Relays</h1>
+              <form onSubmit=${this.handleSubmit}>
+                <p>
+                  <label for="kind">Kind:</label>
+                  <input
+                    type="text"
+                    id="kind"
+                    name="kind"
+                    value=${state.kind}
+                    onChange=${this.handleInputChange}
+                    required
+                  />
+                </p>
+                <p>
+                  <label for="content">Content:</label>
+                  <textarea
+                    id="content"
+                    name="content"
+                    rows="4"
+                    value=${state.content}
+                    onChange=${this.handleInputChange}
+                    required
+                  ></textarea>
+                </p>
+                <p>
+                  <label for="pubkey">Pubkey (hex or npub encoded):</label>
+                  <input
+                    type="text"
+                    id="pubkey"
+                    name="pubkey"
+                    value=${state.pubkey}
+                    onChange=${this.handleInputChange}
+                    required
+                  />
+                  <br />
+                  <small
+                    ><a href="#" onClick=${this.handleNIP07}
+                      >Use NIP-07</a
+                    ></small
+                  >
+                </p>
+                <p>
+                  <input type="submit" value="Send to Relay" />
+                </p>
+              </form>
+            </main>
+          `
+        }
+      }
 
-        <p>
-          <input type="submit" value="Send to Relay" />
-        </p>
-      </form>
-
-      <script>
-        const relayDataElement = document.getElementById('data')
-        const relayData = JSON.parse(relayDataElement.textContent)
-        const relays = relayData.relays
-
-        console.log('relays', relays)
-
-        document
-          .getElementById('nip07')
-          .addEventListener('click', async event => {
-            console.log('getting pubkey')
-            event.preventDefault()
-            if (window.nostr) {
-              let pubkey = await window.nostr.getPublicKey()
-              document.getElementById('pubkey').value = pubkey
-            }
-          })
-
-        document.addEventListener('DOMContentLoaded', function () {
-          const form = document.getElementById('relayForm')
-          form.addEventListener('submit', function (e) {
-            e.preventDefault()
-            const kind = document.getElementById('kind').value
-            const content = document.getElementById('content').value
-
-            // Replace this with your actual sending logic to relay
-            console.log(
-              `Sending to relay with kind: ${kind}, content: ${content}`
-            )
-          })
-        })
-      </script>
-    </main>
+      render(html`<${App} />`, document.getElementById('app'))
+    </script>
   </body>
 </html>
